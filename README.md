@@ -1,9 +1,9 @@
 # Custom-ScriptableRenderPipeline
 
-## Reference
+### Reference
 https://catlikecoding.com/unity/tutorials/custom-srp/
 
-## Initial Commit, 2022/12/23
+### Taking Control of Rendering
  * Create a render pipeline asset and instance. 
  * Render a camera's view. 
  * Perform culling, filtering, and sorting. 
