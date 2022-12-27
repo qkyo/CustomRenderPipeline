@@ -12,3 +12,11 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Taking%20Control%20of%20Rendering.png)
     
+### Draw Calls ## Shaders and Batches
+ * White a HLSL shader.
+ * Support the SRP batcher, GPU instancing, and dynamic batching.
+ * Configure material properties per object and draw many at random.
+ * Create transparent and cutout materials.
+ 
+ 
+    ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Draw%20Calls%20Shaders%20and%20Batches.png)
