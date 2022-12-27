@@ -26,7 +26,7 @@ public partial class CameraRenderer
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 
     ///  Draw all geometry that the camera can see.
-	public void Render (ScriptableRenderContext context, Camera camera) 
+	public void Render (ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing) 
     {
 		this.context = context;
 		this.camera = camera;
@@ -40,13 +40,13 @@ public partial class CameraRenderer
 		}
 
         Setup();
-        DrawVisibleGeometry();
+        DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 		DrawUnsupportedShaders();       // In Unity Editor only.
         DrawGizmos();                   // In Unity Editor only.
         Submit();
 	}
 
-    void DrawVisibleGeometry () 
+    void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing) 
     {
         /// Draw sort: opaque -> skybox -> transparent
         // 1. Draw Opaque object
@@ -55,7 +55,11 @@ public partial class CameraRenderer
             // more-or-less drawn front-to-back, also consider the render queue and materials.
             criteria = SortingCriteria.CommonOpaque
         };
-		var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
+		var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
+        {
+			enableDynamicBatching = useDynamicBatching,
+			enableInstancing = useGPUInstancing
+        };
 		var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
         context.DrawRenderers(
