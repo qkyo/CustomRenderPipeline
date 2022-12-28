@@ -10,6 +10,9 @@ public class CustomRenderPipeline : RenderPipeline
 		this.useDynamicBatching = useDynamicBatching;
 		this.useGPUInstancing = useGPUInstancing;
 		GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+        
+        // Convert light's intensity to linear space.
+		GraphicsSettings.lightsUseLinearIntensity = true;
 	}
 
     /* Each frame Unity invokes Render on the RP instance */

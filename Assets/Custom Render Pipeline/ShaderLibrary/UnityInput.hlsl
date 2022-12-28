@@ -14,12 +14,14 @@ float4 unity_LODFade;
 real4 unity_WorldTransformParams;
 CBUFFER_END
 
-float4x4 unity_MatrixVP;              // View-projection matrix: World Space to Clip Space.
+// View-projection matrix: World Space to Clip Space.
+float4x4 unity_MatrixVP;              
 float4x4 unity_MatrixV;
 float4x4 glstate_matrix_projection;
 
 float4x4 unity_PrevObjectToWorld;
 float4x4 unity_PrevWorldToObject;
 
+float3 _WorldSpaceCameraPos;
 
 #endif
