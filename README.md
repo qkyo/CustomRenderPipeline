@@ -12,7 +12,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Taking%20Control%20of%20Rendering.png)
     
-### Draw Calls ## Shaders and Batches
+### Draw Calls - Shaders and Batches
  * White a HLSL shader.
  * Support the SRP batcher, GPU instancing, and dynamic batching.
  * Configure material properties per object and draw many at random.
@@ -20,3 +20,13 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Draw%20Calls%20Shaders%20and%20Batches.png)
+    
+### Direct Light - Direct Illumination
+ * Use normal vectors to calculate lighting.
+ * Support up to four directional lights.
+ * Apply a BRDF.
+ * Make lit transparent materials.
+ * Create a custom shader GUI with presets.
+ 
+ 
+    ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Light%2C%20BRDF.png)
