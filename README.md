@@ -1,4 +1,4 @@
-# Custom-ScriptableRenderPipeline
+# Custom Scriptable Render Pipeline
 
 ### Reference
 https://catlikecoding.com/unity/tutorials/custom-srp/
