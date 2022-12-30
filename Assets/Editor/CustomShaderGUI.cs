@@ -1,8 +1,14 @@
 /*
-    We now support multiple rendering modes, each requiring specific settings. 
-    To make it easier to switch between modes 
-    we add some buttons to our material inspector to apply preset configurations.
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-28 15:44:30
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2022-12-29 20:25:31
+ * @FilePath: \QkyosRenderPipeline\Assets\Editor\CustomShaderGUI.cs
+ * @Description: We now support multiple rendering modes, each requiring specific settings. 
+ * 				 To make it easier to switch between modes, 
+ *     		     we add some buttons to our material inspector to apply preset configurations.
+ */
+   
 
 using UnityEditor;
 using UnityEngine;

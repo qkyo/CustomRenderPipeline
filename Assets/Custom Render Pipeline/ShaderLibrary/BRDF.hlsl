@@ -1,7 +1,12 @@
 /*
-	How much light we end up seeing reflected off a surface, 
-	which is a combination of diffuse reflection and specular reflection.
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-27 17:52:00
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2022-12-30 13:38:02
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\ShaderLibrary\BRDF.hlsl
+ * @Description: How much light we end up seeing reflected off a surface, 
+ * 			     which is a combination of diffuse reflection and specular reflection.
+ */
 
 #ifndef CUSTOM_BRDF_INCLUDED
 #define CUSTOM_BRDF_INCLUDED

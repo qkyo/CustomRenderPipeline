@@ -1,7 +1,13 @@
 /*
-	Recieve lighting data from sun in scene 
-	and pass lighting data to command buffer(GPU).
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-27 14:06:09
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2022-12-30 13:39:36
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Lighting.cs
+ * @Description: Recieve lighting data from sun in scene 
+ * 		     	 and pass lighting data to command buffer(GPU).
+ */
+
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -25,30 +31,38 @@ public class Lighting {
 	static int
 		dirLightCountId = Shader.PropertyToID("_DirectionalLightCount"),
 		dirLightColorsId = Shader.PropertyToID("_DirectionalLightColors"),
-		dirLightDirectionsId = Shader.PropertyToID("_DirectionalLightDirections");
+		dirLightDirectionsId = Shader.PropertyToID("_DirectionalLightDirections"),
+		// Vector 2 ( Shadow strength, Shadow tile offset )
+		dirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
 
 	static Vector4[]
 		dirLightColors = new Vector4[maxDirLightCount],
-		dirLightDirections = new Vector4[maxDirLightCount];
+		dirLightDirections = new Vector4[maxDirLightCount],
+		dirLightShadowData = new Vector4[maxDirLightCount];
 
 	/// When culling Unity also figures out which lights affect the space visible to the camera. 
 	/// We can rely on that information.
 	CullingResults cullingResults;
+
+	Shadows shadows = new Shadows();
 	
-	public void Setup (ScriptableRenderContext context, CullingResults cullingResults) 
+	public void Setup (ScriptableRenderContext context, CullingResults cullingResults,
+					   ShadowSettings shadowSettings) 
     {
 		this.cullingResults = cullingResults;
 
 		buffer.BeginSample(bufferName);
+		shadows.Setup(context, cullingResults, shadowSettings);
 		SetupLights();
-		// SetupDirectionalLight();
+		shadows.Render();
+		// SetupSingleDirectionalLight();
 		buffer.EndSample(bufferName);
 		context.ExecuteCommandBuffer(buffer);
 		buffer.Clear();
 	}
 	
 	/// We set up our light relying on global sun
-	// void SetupDirectionalLight () 
+	// void SetupSingleDirectionalLight () 
     // {
 	// 	Light light = RenderSettings.sun;
 
@@ -62,6 +76,7 @@ public class Lighting {
 	void SetupDirectionalLight (int index, ref VisibleLight visibleLight) {
 		dirLightColors[index] = visibleLight.finalColor;
 		dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
+		dirLightShadowData[index] = shadows.ReserveDirectionalShadows(visibleLight.light, index);
 	}
 
 	/// When culling Unity also figures out which lights affect the space visible to the camera. 
@@ -88,5 +103,11 @@ public class Lighting {
 		buffer.SetGlobalInt(dirLightCountId, dirLightCount);
 		buffer.SetGlobalVectorArray(dirLightColorsId, dirLightColors);
 		buffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);
+		buffer.SetGlobalVectorArray(dirLightShadowDataId, dirLightShadowData);
 	}
+
+	public void Cleanup () {
+		shadows.Cleanup();
+	}
+
 }

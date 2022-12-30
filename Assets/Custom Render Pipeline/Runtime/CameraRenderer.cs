@@ -1,6 +1,11 @@
 /*
-    For released apps.
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-22 16:13:47
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2022-12-29 20:38:19
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
+ * @Description: Render camera view, for released apps.
+ */
 
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -31,8 +36,12 @@ public partial class CameraRenderer
     
     Lighting lighting = new Lighting();
 
+    /// <summary>
     ///  Draw all geometry that the camera can see.
-	public void Render (ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing) 
+    /// </summary>
+	public void Render (ScriptableRenderContext context, Camera camera, 
+                        bool useDynamicBatching, bool useGPUInstancing,
+                        ShadowSettings shadowSettings) 
     {
 		this.context = context;
 		this.camera = camera;
@@ -40,16 +49,20 @@ public partial class CameraRenderer
         PrepareBuffer();
         PrepareForSceneWindow();    
 	    
-        if (!Cull()) 
+        if (!Cull(shadowSettings.maxDistance)) 
         {
 			return;
 		}
 
+		buffer.BeginSample(SampleName);
+		ExecuteBuffer();
+        lighting.Setup(context, cullingResults, shadowSettings);
+		buffer.EndSample(SampleName);
         Setup();
-        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 		DrawUnsupportedShaders();       // In Unity Editor only.
         DrawGizmos();                   // In Unity Editor only.
+		lighting.Cleanup();
         Submit();
 	}
 
@@ -123,10 +136,11 @@ public partial class CameraRenderer
 		buffer.Clear();
     }
 
-    bool Cull () {
+    bool Cull (float maxShadowDistance) {
         // Figuring out which objects can be culled. 
         // We need to culling those that fall outside of the view frustum of the camera.
 		if (camera.TryGetCullingParameters(out ScriptableCullingParameters p)) {
+            p.shadowDistance = Mathf.Min(maxShadowDistance, camera.farClipPlane);
             cullingResults = context.Cull(ref p);
 			return true;
 		}

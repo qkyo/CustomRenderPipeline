@@ -51,6 +51,27 @@ Shader "Custom Render Pipeline/Lit"
 			#include "LitPass.hlsl"
             ENDHLSL
         }
+
+        Pass 
+        {
+			Tags {
+				"LightMode" = "ShadowCaster"
+			}
+
+            // Only need to write depth, disable writing color data
+			ColorMask 0
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma shader_feature _CLIPPING
+			#pragma multi_compile_instancing
+            // underscore for the no-keyword option matching the 2×2 filter.
+			#pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
+			#pragma vertex ShadowCasterPassVertex
+			#pragma fragment ShadowCasterPassFragment
+			#include "ShadowCasterPass.hlsl"
+			ENDHLSL
+		}
     }
     // Use an instance of the CustomShaderGUI class to draw the inspector for materials that use the Lit shader.
 	CustomEditor "CustomShaderGUI"

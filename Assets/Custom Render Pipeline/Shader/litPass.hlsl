@@ -1,12 +1,11 @@
-/*
-	BRDF Lit
-*/
+/// BRDF Lit
 #ifndef CUSTOM_LIT_PASS_INCLUDED
 #define CUSTOM_LIT_PASS_INCLUDED
 
 #include "../ShaderLibrary/Common.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 #include "../ShaderLibrary/Surface.hlsl"
+#include "../ShaderLibrary/Shadows.hlsl"
 #include "../ShaderLibrary/Light.hlsl"
 #include "../ShaderLibrary/BRDF.hlsl"
 #include "../ShaderLibrary/Lighting.hlsl"
@@ -85,8 +84,10 @@ float4 LitPassFragment (Varyings input) : SV_TARGET
 	// base.rgb = normalize(input.normalWS);		
 	
 	Surface surface;
+	surface.position = input.positionWS;
 	surface.normal = normalize(input.normalWS);		
-	surface.viewDirection = normalize(_WorldSpaceCameraPos - input.positionWS);								
+	surface.viewDirection = normalize(_WorldSpaceCameraPos - input.positionWS);		
+	surface.depth = -TransformWorldToView(input.positionWS).z;						
 	surface.color = base.rgb;
 	surface.alpha = base.a;
 	surface.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);

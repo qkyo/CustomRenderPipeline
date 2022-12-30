@@ -1,6 +1,12 @@
 /*
-    For Development / Editor Rendering.
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-23 13:45:20
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2022-12-30 13:39:56
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.Editor.cs
+ * @Description: Render camera view, render in editor only.
+ */
+ 
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
