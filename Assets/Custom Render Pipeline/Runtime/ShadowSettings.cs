@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 16:54:15
  * @LastEditors: Qkyo
- * @LastEditTime: 2022-12-30 18:13:22
+ * @LastEditTime: 2023-01-03 17:27:57
  * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\ShadowSettings.cs
  * @Description: Configure parameter about shadow quality
  */
@@ -28,7 +28,11 @@ public class ShadowSettings {
 		_256 = 256, _512 = 512, _1024 = 1024,
 		_2048 = 2048, _4096 = 4096, _8192 = 8192
 	}
-
+	
+	/// <summary>
+	/// All directional light use the same filter.
+	/// By default it is PCF2x2
+	/// </summary>
 	public enum FilterMode {
 		PCF2x2, PCF3x3, PCF5x5, PCF7x7
 	}
@@ -54,6 +58,11 @@ public class ShadowSettings {
 		// Fade between cascade
 		[Range(0.001f, 1f)]
 		public float cascadeFade;
+		public enum CascadeBlendMode {
+			Hard, Soft, Dither
+		}
+	
+		public CascadeBlendMode cascadeBlend;
 	}
 
 	public Directional directional = new Directional {
@@ -63,7 +72,8 @@ public class ShadowSettings {
 		cascadeRatio1 = 0.1f,
 		cascadeRatio2 = 0.25f,
 		cascadeRatio3 = 0.5f,
-		cascadeFade = 0.1f
+		cascadeFade = 0.1f,
+		cascadeBlend = Directional.CascadeBlendMode.Hard
 	};
 
 }

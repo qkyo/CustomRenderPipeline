@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 17:40:12
  * @LastEditors: Qkyo
- * @LastEditTime: 2022-12-30 18:46:06
+ * @LastEditTime: 2023-01-03 17:55:03
  * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
  * @Description: Generate shadow map, sample shadow atlas to extract strength    
  */
@@ -50,6 +50,11 @@ public class Shadows {
 		"_DIRECTIONAL_PCF3",
 		"_DIRECTIONAL_PCF5",
 		"_DIRECTIONAL_PCF7",
+	};
+
+	static string[] cascadeBlendKeywords = {
+		"_CASCADE_BLEND_SOFT",
+		"_CASCADE_BLEND_DITHER"
 	};
 
 	const int 
@@ -134,7 +139,11 @@ public class Shadows {
 		float f = 1f - settings.directional.cascadeFade;
 		// Make the transition smoother by linearly fading the cutting off shadows at the max distance
 		buffer.SetGlobalVector(shadowDistanceFadeId, new Vector4(1f / settings.maxDistance, 1f / settings.distanceFade, f));
-		SetKeywords();
+		buffer.SetGlobalVector(shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
+		
+		SetKeywords(directionalFilterKeywords, (int)settings.directional.filter - 1);
+		SetKeywords(cascadeBlendKeywords, (int)settings.directional.cascadeBlend - 1);
+		// Store the atlas size in its X component and texel size in its Y component.
 		buffer.SetGlobalVector(shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
 		buffer.EndSample(bufferName);
 		ExecuteBuffer();
@@ -154,6 +163,8 @@ public class Shadows {
 		int cascadeCount = settings.directional.cascadeCount;
 		int tileOffset = index * cascadeCount;
 		Vector3 ratios = settings.directional.CascadeRatios;
+		
+		float cullingFactor = Mathf.Max(0f, 0.8f - settings.directional.cascadeFade);
 
 		for (int i = 0; i < cascadeCount; i++) {
 			cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
@@ -168,6 +179,9 @@ public class Shadows {
 				SetCascadeData(i, splitData.cullingSphere, tileSize);
 			}
 			
+			/// The value is a factor that modulates the radius of the previous cascade used to perform the culling.
+			splitData.shadowCascadeBlendCullingFactor = cullingFactor;
+
 			/// How shadow-casting objects should be culled
 			shadowSettings.splitData = splitData;
 			int tileIndex = tileOffset + i;
@@ -194,11 +208,17 @@ public class Shadows {
 
     void SetCascadeData (int index, Vector4 cullingSphere, float tileSize) {
 		float texelSize = 2f * cullingSphere.w / tileSize;
+		float filterSize = texelSize * ((float)settings.directional.filter + 1f);
+
+		// Avoid sampling outside of the cascade's culling sphere.
+		cullingSphere.w -= filterSize;
 		cullingSphere.w *= cullingSphere.w;
 		cascadeCullingSpheres[index] = cullingSphere;
+
+
 		// Texels are squares. 
 		// In the worst case we end up having to offset along the square's diagonal, so let's scale it by √2.
-		cascadeData[index] = new Vector4(1f / cullingSphere.w, texelSize * 1.4142136f);
+		cascadeData[index] = new Vector4(1f / cullingSphere.w, filterSize * 1.4142136f);
 	}
 	
 	Vector2 SetTileViewport (int index, int split, float tileSize) {
@@ -237,7 +257,9 @@ public class Shadows {
 		return m;
 	}
 
+	/// <summary>
     /// Release memory for temporary render texture
+	/// </summary>
     public void Cleanup () {
 		buffer.ReleaseTemporaryRT(dirShadowAtlasId);
 		ExecuteBuffer();
@@ -249,7 +271,9 @@ public class Shadows {
 		buffer.Clear();
 	}
 	
+	/// <summary>
 	/// Figure out which light will gets shadows and reserve it.
+	/// </summary>
 	public Vector3 ReserveDirectionalShadows (Light light, int visibleLightIndex) 
     {
         if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
@@ -270,14 +294,17 @@ public class Shadows {
 		return Vector3.zero;
     }
 
-	void SetKeywords () {
-		int enabledIndex = (int)settings.directional.filter - 1;
-		for (int i = 0; i < directionalFilterKeywords.Length; i++) {
+	/// <summary>
+	/// Set PCF Filter keyword
+	/// </summary>
+	void SetKeywords (string[] keywords, int enabledIndex) 
+	{
+		for (int i = 0; i < keywords.Length; i++) {
 			if (i == enabledIndex) {
-				buffer.EnableShaderKeyword(directionalFilterKeywords[i]);
+				buffer.EnableShaderKeyword(keywords[i]);
 			}
 			else {
-				buffer.DisableShaderKeyword(directionalFilterKeywords[i]);
+				buffer.DisableShaderKeyword(keywords[i]);
 			}
 		}
 	}

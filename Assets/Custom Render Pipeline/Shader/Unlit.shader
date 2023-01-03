@@ -11,10 +11,13 @@ Shader "Custom Render Pipeline/Unlit"
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Float) = 0
         // Transparent rendering usually doesn't write to the depth buffer.
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
-		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
 
         // Alpha clipping Modes
 		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
+		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
+        
+        // Shadows
+		[KeywordEnum(On, Clip, Dither, Off)] _Shadows ("Shadows", Float) = 0
     }
     SubShader
     {
@@ -41,6 +44,24 @@ Shader "Custom Render Pipeline/Unlit"
 			#include "UnlitPass.hlsl"
             ENDHLSL
         }
+        Pass 
+        {
+			Tags {
+				"LightMode" = "ShadowCaster"
+			}
+
+            // Only need to write depth, disable writing color data
+			ColorMask 0
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
+			#pragma multi_compile_instancing
+			#pragma vertex ShadowCasterPassVertex
+			#pragma fragment ShadowCasterPassFragment
+			#include "ShadowCasterPass.hlsl"
+			ENDHLSL
+		}
     }
     // Use an instance of the CustomShaderGUI class to draw the inspector for materials that use the Unlit shader.
 	CustomEditor "CustomShaderGUI"

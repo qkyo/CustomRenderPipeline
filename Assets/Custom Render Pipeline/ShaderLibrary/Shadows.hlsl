@@ -43,6 +43,7 @@ struct DirectionalShadowData {
 /// Per-fragment shadow data
 struct ShadowData {
 	int cascadeIndex;
+	float cascadeBlend;
 	float strength;
 };
 
@@ -55,6 +56,7 @@ float FadedShadowStrength (float distance, float scale, float fade) {
 
 ShadowData GetShadowData (Surface surfaceWS) {
 	ShadowData data;	
+	data.cascadeBlend = 1.0;
 	// The max distance is based on view-space depth, not distance to the camera's position.
 	data.strength = FadedShadowStrength(surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
 
@@ -63,8 +65,12 @@ ShadowData GetShadowData (Surface surfaceWS) {
 		float4 sphere = _CascadeCullingSpheres[i];
 		float distanceSqr = DistanceSquared(surfaceWS.position, sphere.xyz);
 		if (distanceSqr < sphere.w) {
+			float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
 			if (i == _CascadeCount - 1) {
-				data.strength *= FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
+				data.strength *= fade;
+			}
+			else {
+				data.cascadeBlend = fade;
 			}
 			break;
 		}
@@ -73,6 +79,14 @@ ShadowData GetShadowData (Surface surfaceWS) {
 	if (i == _CascadeCount) {
 		data.strength = 0.0;
 	}
+	#if defined(_CASCADE_BLEND_DITHER)
+		else if (data.cascadeBlend < surfaceWS.dither) {
+			i += 1;
+		}
+	#endif
+	#if !defined(_CASCADE_BLEND_SOFT)
+		data.cascadeBlend = 1.0;
+	#endif
 
 	data.cascadeIndex = i;
 	return data;
@@ -85,8 +99,33 @@ float SampleDirectionalShadowAtlas (float3 positionSTS) {
 	);
 }
 
+/// When DIRECTIONAL_FILTER_SETUP is defined it needs to sample multiple times, 
+/// otherwise it can suffice with invoking SampleDirectionalShadowAtlas once.
+float FilterDirectionalShadow (float3 positionSTS) {
+	#if defined(DIRECTIONAL_FILTER_SETUP)
+		float weights[DIRECTIONAL_FILTER_SAMPLES];
+		float2 positions[DIRECTIONAL_FILTER_SAMPLES];
+		float4 size = _ShadowAtlasSize.yyxx;
+		DIRECTIONAL_FILTER_SETUP(size, positionSTS.xy, weights, positions);
+		float shadow = 0;
+		for (int i = 0; i < DIRECTIONAL_FILTER_SAMPLES; i++) {
+			shadow += weights[i] * SampleDirectionalShadowAtlas(
+				float3(positions[i].xy, positionSTS.z)
+			);
+		}
+		return shadow;
+	#else
+		return SampleDirectionalShadowAtlas(positionSTS);
+	#endif
+}
+
 float GetDirectionalShadowAttenuation (DirectionalShadowData directional, ShadowData global, Surface surfaceWS) 
 {	
+	/// The surface do not recieve shadows right now
+	#if !defined(_RECEIVE_SHADOWS)
+		return 1.0;
+	#endif
+
 	/// When the shadow strength is zero then it isn't needed to sample shadows at all.
 	if (directional.strength <= 0.0) 
 	{
@@ -97,8 +136,20 @@ float GetDirectionalShadowAttenuation (DirectionalShadowData directional, Shadow
 		_DirectionalShadowMatrices[directional.tileIndex],
 		float4(surfaceWS.position + normalBias, 1.0)
 	).xyz;
-	float shadow = SampleDirectionalShadowAtlas(positionSTS);
+	float shadow = FilterDirectionalShadow(positionSTS);
 	
+	if (global.cascadeBlend < 1.0) {
+		normalBias = surfaceWS.normal *
+			(directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
+		positionSTS = mul(
+			_DirectionalShadowMatrices[directional.tileIndex + 1],
+			float4(surfaceWS.position + normalBias, 1.0)
+		).xyz;
+		shadow = lerp(
+			FilterDirectionalShadow(positionSTS), shadow, global.cascadeBlend
+		);
+	}
+
 	// return shadow;
 	return lerp(1.0, shadow, directional.strength);
 }

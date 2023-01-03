@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 15:44:30
  * @LastEditors: Qkyo
- * @LastEditTime: 2022-12-29 20:25:31
+ * @LastEditTime: 2023-01-03 18:42:14
  * @FilePath: \QkyosRenderPipeline\Assets\Editor\CustomShaderGUI.cs
  * @Description: We now support multiple rendering modes, each requiring specific settings. 
  * 				 To make it easier to switch between modes, 
@@ -24,6 +24,7 @@ public class CustomShaderGUI : ShaderGUI {
 
 	public override void OnGUI ( MaterialEditor materialEditor, MaterialProperty[] properties) 
     {
+		EditorGUI.BeginChangeCheck();
 		base.OnGUI(materialEditor, properties);
         editor = materialEditor;
 		materials = materialEditor.targets;
@@ -37,6 +38,9 @@ public class CustomShaderGUI : ShaderGUI {
             FadePreset();
             TransparentPreset();
         }
+		if (EditorGUI.EndChangeCheck()) {
+			SetShadowCasterPass();
+		}
 	}
 
 	bool HasProperty (string name) => FindProperty(name, properties, false) != null;
@@ -70,6 +74,7 @@ public class CustomShaderGUI : ShaderGUI {
 		}
 	}
 
+
     bool Clipping {
 		set => SetProperty("_Clipping", "_CLIPPING", value);
 	}
@@ -90,6 +95,19 @@ public class CustomShaderGUI : ShaderGUI {
 		set => SetProperty("_ZWrite", value ? 1f : 0f);
 	}
 
+	enum ShadowMode {
+		On, Clip, Dither, Off
+	}
+
+	ShadowMode Shadows {
+		set {
+			if (SetProperty("_Shadows", (float)value)) {
+				SetKeyword("_SHADOWS_CLIP", value == ShadowMode.Clip);
+				SetKeyword("_SHADOWS_DITHER", value == ShadowMode.Dither);
+			}
+		}
+	}
+
     RenderQueue RenderQueue {
 		set {
 			foreach (Material m in materials) {
@@ -106,6 +124,21 @@ public class CustomShaderGUI : ShaderGUI {
 		return false;
 	}
 
+	void SetShadowCasterPass () {
+		MaterialProperty shadows = FindProperty("_Shadows", properties, false);
+		if (shadows == null || shadows.hasMixedValue) {
+			return;
+		}
+		bool enabled = shadows.floatValue < (float)ShadowMode.Off;
+		foreach (Material m in materials) {
+			m.SetShaderPassEnabled("ShadowCaster", enabled);
+		}
+	}
+
+	/*
+	*  Define preset methods that can be switched by a click
+	*/
+
     void OpaquePreset () {
 		if (PresetButton("Opaque")) {
 			Clipping = false;
@@ -114,6 +147,7 @@ public class CustomShaderGUI : ShaderGUI {
 			DstBlend = BlendMode.Zero;
 			ZWrite = true;
 			RenderQueue = RenderQueue.Geometry;
+			Shadows = ShadowMode.On;
 		}
 	}
 
@@ -125,6 +159,7 @@ public class CustomShaderGUI : ShaderGUI {
 			DstBlend = BlendMode.Zero;
 			ZWrite = true;
 			RenderQueue = RenderQueue.AlphaTest;
+			Shadows = ShadowMode.Clip;
 		}
 	}
 
@@ -136,6 +171,7 @@ public class CustomShaderGUI : ShaderGUI {
 			DstBlend = BlendMode.OneMinusSrcAlpha;
 			ZWrite = false;
 			RenderQueue = RenderQueue.Transparent;
+			Shadows = ShadowMode.Dither;
 		}
 	}
 
@@ -147,6 +183,7 @@ public class CustomShaderGUI : ShaderGUI {
 			DstBlend = BlendMode.OneMinusSrcAlpha;
 			ZWrite = false;
 			RenderQueue = RenderQueue.Transparent;
+			Shadows = ShadowMode.Dither;
 		}
 	}
 }
