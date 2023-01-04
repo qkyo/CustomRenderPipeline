@@ -5,12 +5,9 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 
 ##### Unity Version
 2021.3.14f1
-
-****  
----
-___
-
-### Taking Control of Rendering
+  
+  
+### 1. Taking Control of Rendering
  * Create a render pipeline asset and instance. 
  * Render a camera's view. 
  * Perform culling, filtering, and sorting. 
@@ -19,7 +16,7 @@ ___
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Taking%20Control%20of%20Rendering.png)
     
-### Draw Calls - Shaders and Batches
+### 2. Draw Calls - Shaders and Batches
  * White a Unlit HLSL shader.
  * Support the SRP batcher, GPU instancing, and dynamic batching.
  * Configure material properties per object and draw many at random.
@@ -28,7 +25,7 @@ ___
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Draw%20Calls%20Shaders%20and%20Batches.png)
     
-### Direct Light - Direct Illumination
+### 3. Direct Light - Direct Illumination
  * Use normal vectors to calculate lighting.
  * Support up to four directional lights.
  * Apply the Minimalist CookTorrance BRDF.
@@ -38,7 +35,7 @@ ___
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Light%2C%20BRDF.png)
     
-### Directional Shadow - Cascaded Shadow Maps
+### 4. Directional Shadow - Cascaded Shadow Maps
  * Render and sample shadow maps.
  * Support multiple shadowed directional lights.
  * Use cascaded shadow maps.
