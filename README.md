@@ -41,5 +41,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Use cascaded shadow maps.
  * Blend, fade, and filter shadows.
 
-#### Note
+ 
+    ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Shadows%20-%20Cascaded%20Shadow%20Maps.png)
+
 
