@@ -33,3 +33,11 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Light%2C%20BRDF.png)
+    
+### Directional Shadow - Cascaded Shadow Maps
+ * Render and sample shadow maps.
+  * Square texture including four cascaded shadow maps for one light.
+ * Support multiple shadowed directional lights.
+ * Use cascaded shadow maps.
+ * Blend, fade, and filter shadows.
+
