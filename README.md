@@ -7,7 +7,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 2021.3.14f1
   
   
-### 1. [Taking Control of Rendering] (https://catlikecoding.com/unity/tutorials/custom-srp/custom-render-pipeline/)
+### 1. Taking Control of Rendering
  * Create a render pipeline asset and instance. 
  * Render a camera's view. 
  * Perform culling, filtering, and sorting. 
