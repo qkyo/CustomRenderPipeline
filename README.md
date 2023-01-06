@@ -44,4 +44,10 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Shadows%20-%20Cascaded%20Shadow%20Maps.png)
 
+### 5. Baked Light Light Maps and Probes
+ * Bake static global illumination.
+ * Sample light maps, probes, and LPPVs.
+ * Create a meta pass.
+ * Support emissive surfaces.
 
+    ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Baked%20Light.png)
