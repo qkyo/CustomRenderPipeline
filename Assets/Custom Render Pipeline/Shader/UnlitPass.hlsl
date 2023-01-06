@@ -3,19 +3,22 @@
 #ifndef CUSTOM_UNLIT_PASS_INCLUDED
 #define CUSTOM_UNLIT_PASS_INCLUDED
 
-#include "../ShaderLibrary/Common.hlsl"
+// #include "../ShaderLibrary/Common.hlsl"
 
+
+// We have reorganized the property below in "LitInput.hlsl", where is before this shader.
+/*
 /// Textures have to be uploaded to GPU memory
 TEXTURE2D(_BaseMap);
 /// Define a sampler state for the texture, 
 /// which controls how it should be sampled, considering its wrap and filter modes.
 SAMPLER(sampler_BaseMap);
-
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseMap_ST)		// Texture tiling(x, y) and offset(z, w)
     UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
 	UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)				// Alpha clipping cutoff
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+*/
 
 /// We need to know the object index when we enable GPU Instancing with "UnityInstancing.hlsl",
 /// in where it also assumes that our vertex function has a struct parameter.
@@ -42,8 +45,7 @@ Varyings UnlitPassVertex (Attributes input)
 	UNITY_TRANSFER_INSTANCE_ID(input, output);                          // Copy the index when it exists. 
 	float3 positionWS = TransformObjectToWorld(input.positionOS);
 	output.positionCS = TransformWorldToHClip(positionWS);
-	float4 baseST = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseMap_ST);
-	output.baseUV = input.baseUV * baseST.xy + baseST.zw;
+	output.baseUV = TransformBaseUV(input.baseUV);
     return output;
 }
 
@@ -52,11 +54,10 @@ float4 UnlitPassFragment (Varyings input) : SV_TARGET
 {
 	UNITY_SETUP_INSTANCE_ID(input);
 	float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.baseUV);
-	float4 baseColor = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);   // Using UNITY_ACCESS_INSTANCED_PROP to access material property
-	float4 base = baseMap * baseColor;		// Blend result
+	float4 base = GetBase(input.baseUV);		// Blend result
 
 	#if defined(_CLIPPING)
-	clip(base.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));			// alpha clipping
+	clip(base.a - GetCutoff(input.baseUV));			// alpha clipping
 	#endif
 	
 	return base;

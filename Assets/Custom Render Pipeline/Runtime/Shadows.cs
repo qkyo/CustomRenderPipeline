@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 17:40:12
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-03 17:55:03
+ * @LastEditTime: 2023-01-04 17:22:22
  * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
  * @Description: Generate shadow map, sample shadow atlas to extract strength    
  */
@@ -138,7 +138,8 @@ public class Shadows {
 		// Used in last cascades (fade effect).
 		float f = 1f - settings.directional.cascadeFade;
 		// Make the transition smoother by linearly fading the cutting off shadows at the max distance
-		buffer.SetGlobalVector(shadowDistanceFadeId, new Vector4(1f / settings.maxDistance, 1f / settings.distanceFade, f));
+		buffer.SetGlobalVector(shadowDistanceFadeId, 
+							   new Vector4(1f / settings.maxDistance, 1f / settings.distanceFade, 1f / (1f - f * f)));
 		buffer.SetGlobalVector(shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
 		
 		SetKeywords(directionalFilterKeywords, (int)settings.directional.filter - 1);

@@ -3,7 +3,7 @@ Shader "Custom Render Pipeline/Unlit"
     Properties
     {
         _BaseMap("Texture", 2D) = "white" {}
-        _BaseColor("Color", Color) = (0, 0.4412, 1.0, 1.0)
+        [HDR] _BaseColor("Color", Color) = (0, 0.4412, 1.0, 1.0)
 
         // Blend Modes:  whether we replace anything that was drawn before 
         //               or combine with the previous result to produce a see-through effect.
@@ -21,6 +21,11 @@ Shader "Custom Render Pipeline/Unlit"
     }
     SubShader
     {
+        HLSLINCLUDE
+		#include "../ShaderLibrary/Common.hlsl"
+		#include "UnlitInput.hlsl"
+		ENDHLSL
+        
         Pass
         {
 			Blend [_SrcBlend] [_DstBlend]
@@ -38,12 +43,12 @@ Shader "Custom Render Pipeline/Unlit"
 
             // Enable GPU Instancing
             #pragma multi_compile_instancing        
-            
 			#pragma vertex UnlitPassVertex
 			#pragma fragment UnlitPassFragment
 			#include "UnlitPass.hlsl"
             ENDHLSL
         }
+		
         Pass 
         {
 			Tags {
@@ -58,8 +63,24 @@ Shader "Custom Render Pipeline/Unlit"
 			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
 			#pragma multi_compile_instancing
 			#pragma vertex ShadowCasterPassVertex
-			#pragma fragment ShadowCasterPassFragment
+			#pragma fragment ShadowCasterPassFragment	
 			#include "ShadowCasterPass.hlsl"
+			ENDHLSL
+		}
+        
+        Pass 
+		{
+			Tags {
+				"LightMode" = "Meta"
+			}
+
+			Cull Off
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex MetaPassVertex
+			#pragma fragment MetaPassFragment
+			#include "MetaPass.hlsl"
 			ENDHLSL
 		}
     }

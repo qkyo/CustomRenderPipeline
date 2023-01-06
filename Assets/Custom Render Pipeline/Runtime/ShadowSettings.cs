@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 16:54:15
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-03 17:27:57
+ * @LastEditTime: 2023-01-04 15:30:57
  * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\ShadowSettings.cs
  * @Description: Configure parameter about shadow quality
  */
@@ -50,6 +50,11 @@ public class ShadowSettings {
 		[Range(1, 4)]
 		public int cascadeCount;
 
+		/// <summary>
+		/// Represent the division ratio of the 1st, 2nd, and 3rd levels of Cascade for the line-of-sight.
+		/// (1 - cascadeRatio1 - cascadeRatio2 - cascadeRatio3) indicates the proportion of Cascade level 4.
+		/// So cascadeRatio1 + cascadeRatio2 + cascadeRatio3 cannot exceed 1.
+		/// </summary>
 		[Range(0f, 1f)]
 		public float cascadeRatio1, cascadeRatio2, cascadeRatio3;
 		

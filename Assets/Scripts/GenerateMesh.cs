@@ -1,9 +1,15 @@
 /*
-	We'll fill an array of transformation matrices and colors 
-	and tell the GPU to render a mesh with those.
-*/
+ * @Author: Qkyo
+ * @Date: 2022-12-26 17:53:09
+ * @LastEditors: Qkyo
+ * @LastEditTime: 2023-01-06 18:13:35
+ * @FilePath: \QkyosRenderPipeline\Assets\Scripts\GenerateMesh.cs
+ * @Description: We'll fill an array of transformation matrices and colors 
+ *	             and tell the GPU to render a mesh with those.
+ */
 
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GenerateMesh : MonoBehaviour
 {
@@ -12,11 +18,9 @@ public class GenerateMesh : MonoBehaviour
 		metallicId = Shader.PropertyToID("_Metallic"),
 		smoothnessId = Shader.PropertyToID("_Smoothness");
 
-	[SerializeField]
-	Mesh mesh = default;
-
-	[SerializeField]
-	Material material = default;
+	[SerializeField] Mesh mesh = default;
+	[SerializeField] Material material = default;
+	[SerializeField] LightProbeProxyVolume lightProbeVolume = null;
 
 	Matrix4x4[] matrices = new Matrix4x4[1023];
 	Vector4[] baseColors = new Vector4[1023];
@@ -48,7 +52,23 @@ public class GenerateMesh : MonoBehaviour
 			block.SetVectorArray(baseColorId, baseColors);
 			block.SetFloatArray(metallicId, metallic);
 			block.SetFloatArray(smoothnessId, smoothness);
+
+			
+			if (!lightProbeVolume) {
+				// Manually generate the interpolated light probes for all instances and add them to the material property block. 
+				var positions = new Vector3[1023];
+				for (int i = 0; i < matrices.Length; i++) {
+					positions[i] = matrices[i].GetColumn(3);
+				}
+				var lightProbes = new SphericalHarmonicsL2[1023];
+				LightProbes.CalculateInterpolatedLightAndOcclusionProbes(
+					positions, lightProbes, null
+				);
+				block.CopySHCoefficientArraysFrom(lightProbes);
+			}
 		}
-		Graphics.DrawMeshInstanced(mesh, 0, material, matrices, 1023, block);
+		Graphics.DrawMeshInstanced(mesh, 0, material, matrices, 1023, block,
+								   ShadowCastingMode.On, true, 0, null, 
+								   lightProbeVolume ? LightProbeUsage.UseProxyVolume : LightProbeUsage.CustomProvided, lightProbeVolume);
 	}
 }

@@ -17,10 +17,7 @@
 #define MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT 4
 #define MAX_CASCADE_COUNT 4
 
-/// No difference from TEXTURE2D. Just for identify.
 TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
-// SAMPLER do not use bilinear filter(for RGB), cause it's meaningless for depth (scalar).
-// Define an explicit sampler state
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
 
@@ -28,44 +25,40 @@ CBUFFER_START(_CustomShadows)
 	int _CascadeCount;
 	float4 _CascadeCullingSpheres[MAX_CASCADE_COUNT];
 	float4 _CascadeData[MAX_CASCADE_COUNT];
-	float4x4 _DirectionalShadowMatrices[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
+	float4x4 _DirectionalShadowMatrices
+		[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
 	float4 _ShadowAtlasSize;
 	float4 _ShadowDistanceFade;
 CBUFFER_END
 
-/// Per-light shadow data
-struct DirectionalShadowData {
-	float strength;
-	int tileIndex;
-	float normalBias;
-};
-
-/// Per-fragment shadow data
 struct ShadowData {
 	int cascadeIndex;
 	float cascadeBlend;
 	float strength;
 };
 
-/// Make the transition smoother by linearly fading the cutting off shadows at the max distance
-/// scale = 1/m , where m is max distance of light
-/// This calculation follow the instruction in tutorial that fade the shadow 
 float FadedShadowStrength (float distance, float scale, float fade) {
 	return saturate((1.0 - distance * scale) * fade);
 }
 
 ShadowData GetShadowData (Surface surfaceWS) {
-	ShadowData data;	
+	ShadowData data;
 	data.cascadeBlend = 1.0;
-	// The max distance is based on view-space depth, not distance to the camera's position.
-	data.strength = FadedShadowStrength(surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
+	
+	/// Fading Max Distance
+	data.strength = FadedShadowStrength(
+		surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y
+	);
 
+	/// Fading Cascades
 	int i;
 	for (i = 0; i < _CascadeCount; i++) {
 		float4 sphere = _CascadeCullingSpheres[i];
 		float distanceSqr = DistanceSquared(surfaceWS.position, sphere.xyz);
 		if (distanceSqr < sphere.w) {
-			float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
+			float fade = FadedShadowStrength(
+				distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z
+			);
 			if (i == _CascadeCount - 1) {
 				data.strength *= fade;
 			}
@@ -75,7 +68,7 @@ ShadowData GetShadowData (Surface surfaceWS) {
 			break;
 		}
 	}
-
+	
 	if (i == _CascadeCount) {
 		data.strength = 0.0;
 	}
@@ -87,20 +80,22 @@ ShadowData GetShadowData (Surface surfaceWS) {
 	#if !defined(_CASCADE_BLEND_SOFT)
 		data.cascadeBlend = 1.0;
 	#endif
-
 	data.cascadeIndex = i;
 	return data;
 }
 
-/// position in Shadow texture space
+struct DirectionalShadowData {
+	float strength;
+	int tileIndex;
+	float normalBias;
+};
+
 float SampleDirectionalShadowAtlas (float3 positionSTS) {
 	return SAMPLE_TEXTURE2D_SHADOW(
 		_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS
 	);
 }
 
-/// When DIRECTIONAL_FILTER_SETUP is defined it needs to sample multiple times, 
-/// otherwise it can suffice with invoking SampleDirectionalShadowAtlas once.
 float FilterDirectionalShadow (float3 positionSTS) {
 	#if defined(DIRECTIONAL_FILTER_SETUP)
 		float weights[DIRECTIONAL_FILTER_SAMPLES];
@@ -119,25 +114,22 @@ float FilterDirectionalShadow (float3 positionSTS) {
 	#endif
 }
 
-float GetDirectionalShadowAttenuation (DirectionalShadowData directional, ShadowData global, Surface surfaceWS) 
-{	
-	/// The surface do not recieve shadows right now
+float GetDirectionalShadowAttenuation (
+	DirectionalShadowData directional, ShadowData global, Surface surfaceWS
+) {
 	#if !defined(_RECEIVE_SHADOWS)
 		return 1.0;
 	#endif
-
-	/// When the shadow strength is zero then it isn't needed to sample shadows at all.
-	if (directional.strength <= 0.0) 
-	{
+	if (directional.strength <= 0.0) {
 		return 1.0;
 	}
-	float3 normalBias = surfaceWS.normal * (directional.normalBias * _CascadeData[global.cascadeIndex].y);
+	float3 normalBias = surfaceWS.normal *
+		(directional.normalBias * _CascadeData[global.cascadeIndex].y);
 	float3 positionSTS = mul(
 		_DirectionalShadowMatrices[directional.tileIndex],
 		float4(surfaceWS.position + normalBias, 1.0)
 	).xyz;
 	float shadow = FilterDirectionalShadow(positionSTS);
-	
 	if (global.cascadeBlend < 1.0) {
 		normalBias = surfaceWS.normal *
 			(directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
@@ -149,8 +141,6 @@ float GetDirectionalShadowAttenuation (DirectionalShadowData directional, Shadow
 			FilterDirectionalShadow(positionSTS), shadow, global.cascadeBlend
 		);
 	}
-
-	// return shadow;
 	return lerp(1.0, shadow, directional.strength);
 }
 
