@@ -6,8 +6,10 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 ### Unity Version
 2021.3.14f1
   
+### Unity Version
   
-### 1. Taking Control of Rendering
+### Workflow
+#### 1. Taking Control of Rendering
  * Create a render pipeline asset and instance. 
  * Render a camera's view. 
  * Perform culling, filtering, and sorting. 
@@ -16,7 +18,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Taking%20Control%20of%20Rendering.png)
     
-### 2. Draw Calls - Shaders and Batches
+#### 2. Draw Calls - Shaders and Batches
  * White a Unlit HLSL shader.
  * Support the SRP batcher, GPU instancing, and dynamic batching.
  * Configure material properties per object and draw many at random.
@@ -25,7 +27,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Draw%20Calls%20Shaders%20and%20Batches.png)
     
-### 3. Direct Light - Direct Illumination
+#### 3. Direct Light - Direct Illumination
  * Use normal vectors to calculate lighting.
  * Support up to four directional lights.
  * Apply the Minimalist CookTorrance BRDF.
@@ -35,7 +37,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Light%2C%20BRDF.png)
     
-### 4. Directional Shadow - Cascaded Shadow Maps
+#### 4. Directional Shadow - Cascaded Shadow Maps
  * Render and sample shadow maps.
  * Support multiple shadowed directional lights.
  * Use cascaded shadow maps.
@@ -44,7 +46,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Shadows%20-%20Cascaded%20Shadow%20Maps.png)
 
-### 5. Baked Light - Light Maps and Probes
+#### 5. Baked Light - Light Maps and Probes
  * Bake static global illumination.
  * Sample light maps, probes, and LPPVs.
  * Create a meta pass.
@@ -52,7 +54,7 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 
     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Baked%20Light.png)
 
-### 6. Shadow Masks - Baking Direct Occlusion
+#### 6. Shadow Masks - Baking Direct Occlusion
  * Bake static shadows.
  * Combine realtime lighting with baked shadows.
  * Mix realtime and baked shadows.
