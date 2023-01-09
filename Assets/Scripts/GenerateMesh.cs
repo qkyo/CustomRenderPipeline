@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-26 17:53:09
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-06 18:13:35
- * @FilePath: \QkyosRenderPipeline\Assets\Scripts\GenerateMesh.cs
+ * @LastEditTime: 2023-01-09 16:00:21
+ * @FilePath: \CustomRenderPipeline\Assets\Scripts\GenerateMesh.cs
  * @Description: We'll fill an array of transformation matrices and colors 
  *	             and tell the GPU to render a mesh with those.
  */
@@ -61,10 +61,12 @@ public class GenerateMesh : MonoBehaviour
 					positions[i] = matrices[i].GetColumn(3);
 				}
 				var lightProbes = new SphericalHarmonicsL2[1023];
+				var occlusionProbes = new Vector4[1023];
 				LightProbes.CalculateInterpolatedLightAndOcclusionProbes(
-					positions, lightProbes, null
+					positions, lightProbes, occlusionProbes
 				);
 				block.CopySHCoefficientArraysFrom(lightProbes);
+				block.CopyProbeOcclusionArrayFrom(occlusionProbes);
 			}
 		}
 		Graphics.DrawMeshInstanced(mesh, 0, material, matrices, 1023, block,

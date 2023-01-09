@@ -24,6 +24,12 @@ float4 TransformWorldToHClip (float3 positionWS) {
 #define UNITY_PREV_MATRIX_M unity_PrevObjectToWorld
 #define UNITY_PREV_MATRIX_I_M unity_PrevWorldToObject
 
+// The occlusion data can get instanced automatically, 
+// but UnityInstancing.hlsl only does this when SHADOWS_SHADOWMASK is defined. 
+#if defined(_SHADOW_MASK_ALWAYS) || defined(_SHADOW_MASK_DISTANCE)
+	#define SHADOWS_SHADOWMASK
+#endif
+
 /// Redefine those macros above to access the instanced data arrays instead.
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"

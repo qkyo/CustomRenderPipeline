@@ -19,6 +19,9 @@ CBUFFER_START(UnityPerDraw)
 	float4 unity_LightmapST;
 	float4 unity_DynamicLightmapST;
 
+    // For dynamic object shadow mask (light probes)
+	float4 unity_ProbesOcclusion;
+
     // The components of the polynomial for red, green, and blue light
     // which are used by Light Probe.
     float4 unity_SHAr;

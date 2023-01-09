@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-05 18:59:41
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
+ * @LastEditTime: 2023-01-09 15:57:44
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
 
@@ -79,7 +79,10 @@ public partial class CameraRenderer
         {
 			enableDynamicBatching = useDynamicBatching,
 			enableInstancing = useGPUInstancing,
-			perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume
+			perObjectData = PerObjectData.Lightmaps | PerObjectData.ShadowMask | 
+                            PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+                            PerObjectData.LightProbeProxyVolume |
+				            PerObjectData.OcclusionProbeProxyVolume
         };
         // Add Lit to the passes to be rendered
         drawingSettings.SetShaderPassName(1, litShaderTagId);   

@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 17:40:12
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-04 17:22:22
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
+ * @LastEditTime: 2023-01-09 17:02:17
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
  * @Description: Generate shadow map, sample shadow atlas to extract strength    
  */
 
@@ -57,6 +57,12 @@ public class Shadows {
 		"_CASCADE_BLEND_DITHER"
 	};
 
+	static string[] shadowMaskKeywords = {
+		"_SHADOW_MASK_ALWAYS",
+		"_SHADOW_MASK_DISTANCE"
+	};
+	bool useShadowMask;
+
 	const int 
 		// How many shadowed directional lights there can be
 		maxShadowedDirectionalLightCount = 4, 
@@ -87,6 +93,7 @@ public class Shadows {
 		this.cullingResults = cullingResults;
 		this.settings = settings;
         ShadowedDirectionalLightCount = 0;
+		useShadowMask = false;
 	}
 
     public void Render () 
@@ -102,6 +109,17 @@ public class Shadows {
 				32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap
 			);
 		}
+		
+		// Enable or distable the keyword at the end of Render.
+		// We have to do this even if we end up not rendering any realtime shadows, 
+		// because the shadow mask isn't realtime.
+		buffer.BeginSample(bufferName);		
+		SetKeywords(shadowMaskKeywords, useShadowMask ?
+			QualitySettings.shadowmaskMode == ShadowmaskMode.Shadowmask ? 0 : 1 :
+			-1
+		);
+		buffer.EndSample(bufferName);
+		ExecuteBuffer();
 	}
 
 	void RenderDirectionalShadows () 
@@ -275,24 +293,39 @@ public class Shadows {
 	/// <summary>
 	/// Figure out which light will gets shadows and reserve it.
 	/// </summary>
-	public Vector3 ReserveDirectionalShadows (Light light, int visibleLightIndex) 
+	public Vector4 ReserveDirectionalShadows (Light light, int visibleLightIndex) 
     {
         if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
-			light.shadows != LightShadows.None && light.shadowStrength > 0f &&
-			cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b))
+			light.shadows != LightShadows.None && light.shadowStrength > 0f )
         {
+			float maskChannel = -1;
+			// Determine whether the light uses the shadow mask
+			LightBakingOutput lightBaking = light.bakingOutput;
+			if (lightBaking.lightmapBakeType == LightmapBakeType.Mixed &&
+				lightBaking.mixedLightingMode == MixedLightingMode.Shadowmask) 
+			{
+				useShadowMask = true;
+				maskChannel = lightBaking.occlusionMaskChannel;
+			}
+
+			// Check whether there aren't realtime shadow casters
+			if (!cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b)) 
+			{
+				return new Vector4(-light.shadowStrength, 0f, 0f, maskChannel);
+			}
+
 			ShadowedDirectionalLights[ShadowedDirectionalLightCount] =
 				new ShadowedDirectionalLight {
 					visibleLightIndex = visibleLightIndex,
 					slopeScaleBias = light.shadowBias,
 					nearPlaneOffset = light.shadowNearPlane
 				};
-			return new Vector3(light.shadowStrength, 
+			return new Vector4(light.shadowStrength, 
 							   settings.directional.cascadeCount * ShadowedDirectionalLightCount++,
-							   light.shadowNormalBias);
+							   light.shadowNormalBias, maskChannel);
 		}
 		
-		return Vector3.zero;
+		return new Vector4(0f, 0f, 0f, -1f);
     }
 
 	/// <summary>
