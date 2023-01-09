@@ -1,9 +1,9 @@
 # Custom Scriptable Render Pipeline
 
-##### Reference
+### Reference
 https://catlikecoding.com/unity/tutorials/custom-srp/
 
-##### Unity Version
+### Unity Version
 2021.3.14f1
   
   
@@ -51,3 +51,12 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Support emissive surfaces.
 
     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Baked%20Light.png)
+
+### 6. Shadow Masks - Baking Direct Occlusion
+ * Bake static shadows.
+ * Combine realtime lighting with baked shadows.
+ * Mix realtime and baked shadows.
+ * Support up to four shadow mask lights.
+
+    ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Mixed%20realtime%20and%20baked%20shadow.gif)
+    ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Mix%20shadow%20-%20Distance%20shadow%20mask%20mode.gif)
