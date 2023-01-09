@@ -6,8 +6,6 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 ### Unity Version
 2021.3.14f1
   
-### Unity Version
-  
 ### Workflow
 #### 1. Taking Control of Rendering
  * Create a render pipeline asset and instance. 
