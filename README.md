@@ -68,5 +68,5 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Support optional Fresnel reflections.
  
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/LOD%20group.gif)
-     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Support%20optional%20Fresnel%20reflections..png)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Support%20optional%20Fresnel%20reflections.png)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Reflect%20the%20environment%20by%20sampling%20a%20reflection%20probe.png)
