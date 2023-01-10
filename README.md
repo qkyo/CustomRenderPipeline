@@ -60,3 +60,13 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
 
     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Mixed%20realtime%20and%20baked%20shadow.gif)
     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Mix%20shadow%20-%20Distance%20shadow%20mask%20mode.gif)
+
+#### 7. LOD and Reflections - Adding Details
+ * Use LOD Groups.
+ * Cross-Fade between LOD levels.
+ * Reflect the environment by sampling a reflection probe.
+ * Support optional Fresnel reflections.
+ 
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/LOD%20group.gif)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Support%20optional%20Fresnel%20reflections..png)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Reflect%20the%20environment%20by%20sampling%20a%20reflection%20probe.png)
