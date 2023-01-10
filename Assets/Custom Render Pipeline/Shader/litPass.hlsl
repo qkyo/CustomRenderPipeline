@@ -50,7 +50,8 @@ Varyings LitPassVertex (Attributes input)
 {
     Varyings output;
 	// Extracts the index from the input and stores it in a global static variable that the other instancing macros rely on.
-    UNITY_SETUP_INSTANCE_ID(input);                                     
+    UNITY_SETUP_INSTANCE_ID(input);       
+	  
 	// Copy the index when it exists.          
 	UNITY_TRANSFER_INSTANCE_ID(input, output);   
 	TRANSFER_GI_DATA(input, output);                     
@@ -65,6 +66,12 @@ Varyings LitPassVertex (Attributes input)
 float4 LitPassFragment (Varyings input) : SV_TARGET 
 {
 	UNITY_SETUP_INSTANCE_ID(input);
+	
+	// #if defined(LOD_FADE_CROSSFADE)
+	// 	return -unity_LODFade.x;
+	// #endif                     
+	ClipLOD(input.positionCS.xy, unity_LODFade.x);       
+
 	float4 base = GetBase(input.baseUV);					// Get Blend result (LitInput.hlsl)
 	#if defined(_CLIPPING)									// Alpha clipping
 		clip(base.a - GetCutoff(input.baseUV));				// (LitInput.hlsl)
@@ -85,6 +92,7 @@ float4 LitPassFragment (Varyings input) : SV_TARGET
 	surface.alpha = base.a;
 	surface.metallic = GetMetallic(input.baseUV);			// (LitInput.hlsl)
 	surface.smoothness = GetSmoothness(input.baseUV);		// (LitInput.hlsl)
+	surface.fresnelStrength = GetFresnel(input.baseUV);
 	surface.dither = InterleavedGradientNoise(input.positionCS.xy, 0);
 
 	#if defined(_PREMULTIPLY_ALPHA)
@@ -93,7 +101,7 @@ float4 LitPassFragment (Varyings input) : SV_TARGET
 		BRDF brdf = GetBRDF(surface);
 	#endif
 
-	GI gi = GetGI(GI_FRAGMENT_DATA(input), surface);
+	GI gi = GetGI(GI_FRAGMENT_DATA(input), surface, brdf);
 	float3 color = GetLighting(surface, brdf, gi);
 	color += GetEmission(input.baseUV);
 

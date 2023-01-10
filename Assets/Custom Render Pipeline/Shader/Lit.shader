@@ -18,6 +18,7 @@ Shader "Custom Render Pipeline/Lit"
         // Metallic workflow
         _Metallic ("Metallic", Range(0, 1)) = 0
 		_Smoothness ("Smoothness", Range(0, 1)) = 0.5
+		_Fresnel ("Fresnel", Range(0, 1)) = 1
 
         // Blend Modes:  whether we replace anything that was drawn before 
         //               or combine with the previous result to produce a see-through effect.
@@ -73,9 +74,11 @@ Shader "Custom Render Pipeline/Lit"
 			#pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
             // underscore for the no-keyword option matching the CASCADE_BLEND_HARD mode.
             #pragma multi_compile _ _CASCADE_BLEND_SOFT _CASCADE_BLEND_DITHER
-			#pragma multi_compile _ _SHADOW_MASK_ALWAYS _SHADOW_MASK_DISTANCE
             // using baked lightmap 
             #pragma multi_compile _ LIGHTMAP_ON
+            // using baked shadow mask
+			#pragma multi_compile _ _SHADOW_MASK_ALWAYS _SHADOW_MASK_DISTANCE
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
             // Enable GPU Instancing
             #pragma multi_compile_instancing        
 			#pragma vertex LitPassVertex
@@ -96,6 +99,7 @@ Shader "Custom Render Pipeline/Lit"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_instancing
 			#pragma vertex ShadowCasterPassVertex
 			#pragma fragment ShadowCasterPassFragment
