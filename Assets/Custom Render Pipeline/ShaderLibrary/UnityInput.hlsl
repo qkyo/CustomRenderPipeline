@@ -21,6 +21,7 @@ CBUFFER_START(UnityPerDraw)
 
     // For dynamic object shadow mask (light probes)
 	float4 unity_ProbesOcclusion;
+	float4 unity_SpecCube0_HDR;
 
     // The components of the polynomial for red, green, and blue light
     // which are used by Light Probe.

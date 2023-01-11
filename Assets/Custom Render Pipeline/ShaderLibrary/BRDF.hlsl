@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-27 17:52:00
  * @LastEditors: Qkyo
- * @LastEditTime: 2022-12-30 13:38:02
+ * @LastEditTime: 2023-01-10 21:54:18
  * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\ShaderLibrary\BRDF.hlsl
  * @Description: How much light we end up seeing reflected off a surface, 
  * 			     which is a combination of diffuse reflection and specular reflection.
@@ -17,6 +17,11 @@ struct BRDF {
 	float3 diffuse;
 	float3 specular;
 	float roughness;
+	float perceptualRoughness;				/// As roughness scatters specular reflection 
+											/// it not only reduces its intensity but also muddles it, as if it's out of focus. 
+											/// This effect gets approximated by Unity by storing blurred versions of the environment map in lower mip levels. 
+											/// To access the correct mip level we need to know the perceptual roughness
+	float fresnel;
 };
 
 /// Define that as the minimum reflectivity 
@@ -29,7 +34,6 @@ float OneMinusReflectivity (float metallic) {
 BRDF GetBRDF (Surface surface, bool applyAlphaToDiffuse = false) {
 	// float oneMinusReflectivity = 1.0 - surface.metallic;
 	float oneMinusReflectivity = OneMinusReflectivity(surface.metallic);
-	float perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(surface.smoothness);
 	
 	BRDF brdf;
 	brdf.diffuse = surface.color * oneMinusReflectivity;
@@ -40,7 +44,10 @@ BRDF GetBRDF (Surface surface, bool applyAlphaToDiffuse = false) {
 
 	// brdf.specular = surface.color - brdf.diffuse;
 	brdf.specular = lerp(MIN_REFLECTIVITY, surface.color, surface.metallic);
-	brdf.roughness = PerceptualRoughnessToRoughness(perceptualRoughness);
+	brdf.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(surface.smoothness);
+	brdf.roughness = PerceptualRoughnessToRoughness(brdf.perceptualRoughness);
+	// A variant Schlick's approximation for Fresnel.
+	brdf.fresnel = saturate(surface.smoothness + 1.0 - oneMinusReflectivity);
 
 	return brdf;
 }
@@ -57,6 +64,14 @@ float SpecularStrength (Surface surface, BRDF brdf, Light light) {
 
 float3 DirectBRDF (Surface surface, BRDF brdf, Light light) {
 	return SpecularStrength(surface, brdf, light) * brdf.specular + brdf.diffuse;
+}
+
+float3 IndirectBRDF (Surface surface, BRDF brdf, float3 diffuse, float3 specular) 
+{	
+	float fresnelStrength = surface.fresnelStrength * Pow4(1.0 - saturate(dot(surface.normal, surface.viewDirection)));
+	float3 reflection = specular * lerp(brdf.specular, brdf.fresnel, fresnelStrength);
+	reflection /= brdf.roughness * brdf.roughness + 1.0;
+    return (diffuse * brdf.diffuse + reflection) * surface.occlusion;
 }
 
 #endif
