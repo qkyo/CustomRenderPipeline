@@ -1,8 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelEnable.mat.meta
 guid: c17c7ffd401916f4b8fa592979dab49e
 NativeFormatImporter:
+========
+guid: 690cd7d2c08d0284ab0bf129556f71a9
+PrefabImporter:
+>>>>>>>> 65cd6571e968ae1fba576548e7c676a0fcd9175b:Assets/Prefabs/LOD Pyramid.prefab.meta
   externalObjects: {}
-  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

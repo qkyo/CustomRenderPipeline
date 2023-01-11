@@ -1,8 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelDisable.mat.meta
 guid: 3db151fbacda42e4b901606ecfb73811
 NativeFormatImporter:
+========
+guid: 05a1f39fd6d08384f871c13d5b0e9885
+folderAsset: yes
+DefaultImporter:
+>>>>>>>> 65cd6571e968ae1fba576548e7c676a0fcd9175b:Assets/Prefabs.meta
   externalObjects: {}
-  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

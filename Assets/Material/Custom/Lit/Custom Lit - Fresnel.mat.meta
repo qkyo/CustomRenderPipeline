@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - Fresnel.mat.meta
 guid: c17c7ffd401916f4b8fa592979dab49e
+========
+guid: 3db151fbacda42e4b901606ecfb73811
+>>>>>>>> 65cd6571e968ae1fba576548e7c676a0fcd9175b:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000
