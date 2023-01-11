@@ -75,3 +75,4 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Add support for a MODS mask map.
  * Introduce a secondary detail map.
  * Perform tangent-space normal mapping.
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/MODS%2C%20Detail%20and%20Normal%20Map.gif)
