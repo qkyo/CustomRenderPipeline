@@ -69,3 +69,9 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/LOD%20group.gif)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Reflection%20probe%2C%20and%20Fresnel%20reflection.png)
+     
+     
+#### 8. Complex Maps - Masks, Details, and Normals
+ * Add support for a MODS mask map.
+ * Introduce a secondary detail map.
+ * Perform tangent-space normal mapping.
