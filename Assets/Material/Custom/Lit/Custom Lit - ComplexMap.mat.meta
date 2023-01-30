@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - ComplexMap.mat.meta
 guid: a81292502ebed6f4e9918010146167a6
-========
-guid: 3db151fbacda42e4b901606ecfb73811
->>>>>>>> 401f73e66fa0033c6ed64fc5e6f2e509cd285a41:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000

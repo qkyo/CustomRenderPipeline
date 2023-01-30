@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2023-01-14 14:04:40
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-30 11:30:03
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CustomRenderPipeline.Editor.cs
+ * @LastEditTime: 2023-01-30 16:56:21
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CustomRenderPipeline.Editor.cs
  * @Description: 
  */
 
@@ -51,6 +51,8 @@ public partial class CustomRenderPipeline {
 					case LightType.Spot:
 						var spotLight = new SpotLight();
 						LightmapperUtils.Extract(light, ref spotLight);
+						spotLight.innerConeAngle = light.innerSpotAngle * Mathf.Deg2Rad;
+						spotLight.angularFalloff = AngularFalloffType.AnalyticAndInnerAngle;
 						lightData.Init(ref spotLight);
 						break;
 					case LightType.Area:
@@ -58,9 +60,7 @@ public partial class CustomRenderPipeline {
 						LightmapperUtils.Extract(light, ref rectangleLight);
 						// We don't support realtime area lights, 
 						// so let's force their light mode to baked if they exist.
-						// rectangleLight.mode = LightMode.Baked;
-						spotLight.innerConeAngle = light.innerSpotAngle * Mathf.Deg2Rad;
-						spotLight.angularFalloff = AngularFalloffType.AnalyticAndInnerAngle;
+						rectangleLight.mode = LightMode.Baked;
 						lightData.Init(ref rectangleLight);
 						break;
 					default:

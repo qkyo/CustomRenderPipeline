@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-27 14:06:09
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-30 12:05:43
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Lighting.cs
+ * @LastEditTime: 2023-01-30 17:11:41
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\Lighting.cs
  * @Description: Recieve lighting data from sun in scene 
  * 		     	 and pass lighting data to command buffer(GPU).
  */
