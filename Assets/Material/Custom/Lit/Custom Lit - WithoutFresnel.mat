@@ -7,7 +7,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat
   m_Name: Custom Lit - WithoutFresnel
+========
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelEnable.mat
+  m_Name: Custom Lit - FresnelEnable
+========
+  m_Name: Custom Lit - WithoutFresnel
+>>>>>>>> 65cd6571e968ae1fba576548e7c676a0fcd9175b:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat
+>>>>>>>> 401f73e66fa0033c6ed64fc5e6f2e509cd285a41:Assets/Material/Custom/Lit/Custom Lit - FresnelEnable.mat
   m_Shader: {fileID: 4800000, guid: 420c10ce509e6c844b975f5741078fb5, type: 3}
   m_ValidKeywords:
   - _PREMULTIPLY_ALPHA
@@ -70,7 +78,15 @@ Material:
     - _Cutoff: 0.362
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat
     - _Fresnel: 0
+========
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelEnable.mat
+    - _Fresnel: 1
+========
+    - _Fresnel: 0
+>>>>>>>> 65cd6571e968ae1fba576548e7c676a0fcd9175b:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat
+>>>>>>>> 401f73e66fa0033c6ed64fc5e6f2e509cd285a41:Assets/Material/Custom/Lit/Custom Lit - FresnelEnable.mat
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1

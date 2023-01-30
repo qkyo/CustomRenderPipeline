@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-30 11:52:26
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
+ * @LastEditTime: 2023-01-30 12:20:57
+ * @FilePath: \QkyosRenderPipelinec:\Users\qkyo\Unity\Project\Github\CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
 

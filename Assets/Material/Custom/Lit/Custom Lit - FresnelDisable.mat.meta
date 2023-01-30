@@ -1,8 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelDisable.mat.meta
 guid: 3db151fbacda42e4b901606ecfb73811
+========
+guid: ee21614f97dd0b24fb68afc007848659
+>>>>>>>> 401f73e66fa0033c6ed64fc5e6f2e509cd285a41:Assets/Custom Render Pipeline/Baked Lighting Settings.lighting.meta
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  mainObjectFileID: 4890085278179872738
   userData: 
   assetBundleName: 
   assetBundleVariant: 

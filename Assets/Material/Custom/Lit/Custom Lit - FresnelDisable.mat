@@ -7,7 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<<< HEAD:Assets/Material/Custom/Lit/Custom Lit - FresnelDisable.mat
   m_Name: Custom Lit - FresnelDisable
+========
+  m_Name: Custom Lit - WithoutFresnel
+>>>>>>>> 401f73e66fa0033c6ed64fc5e6f2e509cd285a41:Assets/Material/Custom/Lit/Custom Lit - WithoutFresnel.mat
   m_Shader: {fileID: 4800000, guid: 420c10ce509e6c844b975f5741078fb5, type: 3}
   m_ValidKeywords:
   - _PREMULTIPLY_ALPHA

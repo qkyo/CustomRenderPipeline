@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-27 17:52:00
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-10 21:54:18
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\ShaderLibrary\BRDF.hlsl
+ * @LastEditTime: 2023-01-30 12:21:28
+ * @FilePath: \QkyosRenderPipelinec:\Users\qkyo\Unity\Project\Github\CustomRenderPipeline\Assets\Custom Render Pipeline\ShaderLibrary\BRDF.hlsl
  * @Description: How much light we end up seeing reflected off a surface, 
  * 			     which is a combination of diffuse reflection and specular reflection.
  */
