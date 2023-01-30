@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 17:40:12
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-09 17:02:17
- * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
+ * @LastEditTime: 2023-01-14 14:51:22
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\Shadows.cs
  * @Description: Generate shadow map, sample shadow atlas to extract strength    
  */
 
@@ -327,6 +327,20 @@ public class Shadows {
 		
 		return new Vector4(0f, 0f, 0f, -1f);
     }
+
+	public Vector4 ReserveOtherShadows (Light light, int visibleLightIndex) {
+		if (light.shadows != LightShadows.None && light.shadowStrength > 0f) 
+		{
+			LightBakingOutput lightBaking = light.bakingOutput;
+			if (lightBaking.lightmapBakeType == LightmapBakeType.Mixed &&
+				lightBaking.mixedLightingMode == MixedLightingMode.Shadowmask) 
+			{
+				useShadowMask = true;
+				return new Vector4(light.shadowStrength, 0f, 0f, lightBaking.occlusionMaskChannel);
+			}
+		}
+		return new Vector4(0f, 0f, 0f, -1f);
+	}
 
 	/// <summary>
 	/// Set PCF Filter keyword

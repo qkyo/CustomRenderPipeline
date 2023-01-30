@@ -53,11 +53,12 @@ Varyings UnlitPassVertex (Attributes input)
 float4 UnlitPassFragment (Varyings input) : SV_TARGET 
 {
 	UNITY_SETUP_INSTANCE_ID(input);
-	float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.baseUV);
-	float4 base = GetBase(input.baseUV);		// Blend result
+
+	InputConfig config = GetInputConfig(input.baseUV);
+	float4 base = GetBase(config);										// Get Blend result (LitInput.hlsl)
 
 	#if defined(_CLIPPING)
-	clip(base.a - GetCutoff(input.baseUV));			// alpha clipping
+	clip(base.a - GetCutoff(config));									// alpha clipping
 	#endif
 	
 	return base;

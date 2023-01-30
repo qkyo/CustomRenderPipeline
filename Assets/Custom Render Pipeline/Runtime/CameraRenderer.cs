@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-09 15:57:44
- * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
+ * @LastEditTime: 2023-01-30 11:52:26
+ * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
 
@@ -40,7 +40,7 @@ public partial class CameraRenderer
     ///  Draw all geometry that the camera can see.
     /// </summary>
 	public void Render (ScriptableRenderContext context, Camera camera, 
-                        bool useDynamicBatching, bool useGPUInstancing,
+                        bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
                         ShadowSettings shadowSettings) 
     {
 		this.context = context;
@@ -56,18 +56,21 @@ public partial class CameraRenderer
 
 		buffer.BeginSample(SampleName);
 		ExecuteBuffer();
-        lighting.Setup(context, cullingResults, shadowSettings);
+        lighting.Setup(context, cullingResults, shadowSettings, useLightsPerObject);
 		buffer.EndSample(SampleName);
         Setup();
-        DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
+        DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, useLightsPerObject);
 		DrawUnsupportedShaders();       // In Unity Editor only.
         DrawGizmos();                   // In Unity Editor only.
 		lighting.Cleanup();
         Submit();
 	}
 
-    void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing) 
+    void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject) 
     {
+        PerObjectData lightsPerObjectFlags = useLightsPerObject ?
+			PerObjectData.LightData | PerObjectData.LightIndices :
+			PerObjectData.None;
         /// Draw sort: opaque -> skybox -> transparent
         // 1. Draw Opaque object
 		var sortingSettings = new SortingSettings(camera)
@@ -79,10 +82,12 @@ public partial class CameraRenderer
         {
 			enableDynamicBatching = useDynamicBatching,
 			enableInstancing = useGPUInstancing,
-			perObjectData = PerObjectData.Lightmaps | PerObjectData.ShadowMask | 
+			perObjectData = PerObjectData.ReflectionProbes |
+                            PerObjectData.Lightmaps | PerObjectData.ShadowMask | 
                             PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
                             PerObjectData.LightProbeProxyVolume |
-				            PerObjectData.OcclusionProbeProxyVolume
+				            PerObjectData.OcclusionProbeProxyVolume |
+				            lightsPerObjectFlags
         };
         // Add Lit to the passes to be rendered
         drawingSettings.SetShaderPassName(1, litShaderTagId);   

@@ -44,6 +44,11 @@ struct ShadowData {
 	ShadowMask shadowMask;
 };
 
+struct OtherShadowData {
+	float strength;
+	int shadowMaskChannel;
+};
+
 float FadedShadowStrength (float distance, float scale, float fade) {
 	return saturate((1.0 - distance * scale) * fade);
 }
@@ -131,7 +136,7 @@ float FilterDirectionalShadow (float3 positionSTS) {
 // Get realtime shadow
 float GetCascadedShadow (DirectionalShadowData directional, ShadowData global, Surface surfaceWS) 
 {
-	float3 normalBias = surfaceWS.normal *
+	float3 normalBias = surfaceWS.interpolatedNormal *
 		(directional.normalBias * _CascadeData[global.cascadeIndex].y);
 	float3 positionSTS = mul(
 		_DirectionalShadowMatrices[directional.tileIndex],
@@ -139,8 +144,7 @@ float GetCascadedShadow (DirectionalShadowData directional, ShadowData global, S
 	).xyz;
 	float shadow = FilterDirectionalShadow(positionSTS);
 	if (global.cascadeBlend < 1.0) {
-		normalBias = surfaceWS.normal *
-			(directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
+		normalBias = surfaceWS.interpolatedNormal * (directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
 		positionSTS = mul(
 			_DirectionalShadowMatrices[directional.tileIndex + 1],
 			float4(surfaceWS.position + normalBias, 1.0)
@@ -202,6 +206,24 @@ float GetDirectionalShadowAttenuation (DirectionalShadowData directional, Shadow
 	else {
 		shadow = GetCascadedShadow(directional, global, surfaceWS);
 		shadow = MixBakedAndRealtimeShadows(global, shadow, directional.shadowMaskChannel, directional.strength);
+	}
+	return shadow;
+}
+
+float GetOtherShadowAttenuation (OtherShadowData other, ShadowData global, Surface surfaceWS) 
+{
+	#if !defined(_RECEIVE_SHADOWS)
+		return 1.0;
+	#endif
+	
+	float shadow;
+	if (other.strength > 0.0) {
+		shadow = GetBakedShadow(
+			global.shadowMask, other.shadowMaskChannel, other.strength
+		);
+	}
+	else {
+		shadow = 1.0;
 	}
 	return shadow;
 }

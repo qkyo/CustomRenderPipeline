@@ -13,6 +13,9 @@ CBUFFER_START(UnityPerDraw)
     float4 unity_LODFade;
     real4 unity_WorldTransformParams;
 
+	real4 unity_LightData;
+	real4 unity_LightIndices[2];
+    
     // The unwrap is scaled and positioned per object in the light map 
     // so each instance gets its own space.
     // Scale and translation are applied to lightmap UV.
@@ -21,6 +24,7 @@ CBUFFER_START(UnityPerDraw)
 
     // For dynamic object shadow mask (light probes)
 	float4 unity_ProbesOcclusion;
+	float4 unity_SpecCube0_HDR;
 
     // The components of the polynomial for red, green, and blue light
     // which are used by Light Probe.

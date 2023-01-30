@@ -32,7 +32,9 @@ float4 TransformWorldToHClip (float3 positionWS) {
 
 /// Redefine those macros above to access the instanced data arrays instead.
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
 float Square (float v) {
 	return v * v;
@@ -42,4 +44,27 @@ float DistanceSquared(float3 pA, float3 pB) {
 	return dot(pA - pB, pA - pB);
 }
 
+// Mix both LOD levels for both surfaces and their shadows
+void ClipLOD (float2 positionCS, float fade) {
+	#if defined(LOD_FADE_CROSSFADE)
+		float dither = InterleavedGradientNoise(positionCS.xy, 0);
+		clip(fade + (fade < 0.0 ? dither : -dither));
+	#endif
+}
+
+// XYZ in the RGB channels—but this isn't the most efficient way. 
+// If we assume that the normal vectors always point up and never down we can omit the upward component and derive it from the other two. 
+// Those channels can then be stored in a compressed texture format in such a way that loss of precision is minimized.
+float3 DecodeNormal (float4 sample, float scale) {
+	#if defined(UNITY_NO_DXT5nm)
+	    return UnpackNormalRGB(sample, scale);
+	#else
+	    return UnpackNormalmapRGorAG(sample, scale);
+	#endif
+}
+
+float3 NormalTangentToWorld (float3 normalTS, float3 normalWS, float4 tangentWS) {
+	float3x3 tangentToWorld = CreateTangentToWorld(normalWS, tangentWS.xyz, tangentWS.w);
+	return TransformTangentToWorld(normalTS, tangentToWorld);
+}
 #endif
