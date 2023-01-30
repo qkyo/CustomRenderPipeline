@@ -84,4 +84,4 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Bake lighting and shadows for point and spot lights.
  * Limit rendering to max 8 other lights per object.
  
-     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Lights%20-%20Lights%20with%20Limited%20Influence.jpg)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Lights%20and%20Their%20Baked%20Shadow.jpg)
