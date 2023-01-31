@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-28 16:54:15
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-04 15:30:57
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\ShadowSettings.cs
+ * @LastEditTime: 2023-01-31 11:50:07
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\ShadowSettings.cs
  * @Description: Configure parameter about shadow quality
  */
  
@@ -79,6 +79,18 @@ public class ShadowSettings {
 		cascadeRatio3 = 0.5f,
 		cascadeFade = 0.1f,
 		cascadeBlend = Directional.CascadeBlendMode.Hard
+	};
+
+	[System.Serializable]
+	public struct Other {
+		public TextureSize atlasSize;
+
+		public FilterMode filter;
+	}
+
+	public Other other = new Other {
+		atlasSize = TextureSize._1024,
+		filter = FilterMode.PCF2x2
 	};
 
 }

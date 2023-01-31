@@ -93,6 +93,7 @@ Shader "Custom Render Pipeline/Lit"
             #pragma shader_feature _RECEIVE_SHADOWS
             // underscore for the no-keyword option matching the 2×2 filter.
 			#pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
+            #pragma multi_compile _ _OTHER_PCF3 _OTHER_PCF5 _OTHER_PCF7
             // underscore for the no-keyword option matching the CASCADE_BLEND_HARD mode.
             #pragma multi_compile _ _CASCADE_BLEND_SOFT _CASCADE_BLEND_DITHER
             // using baked lightmap 
