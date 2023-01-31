@@ -78,10 +78,8 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/MODS%2C%20Detail%20and%20Normal%20Map.gif)
      
-#### 9. Point and Spot Lights - Lights with Limited Influence
- * Support more light types than only directional.
- * Include realtime point and spot lights.
- * Bake lighting and shadows for point and spot lights.
- * Limit rendering to max 8 other lights per object.
- 
-     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Lights%20and%20Their%20Baked%20Shadow.jpg)
+#### 9. Point and Spot Shadows - Perspective Shadows
+ * Mix baked and realtime shadows for point and spot lights.
+ * Add a second shadow atlas.
+ * Render and sample shadows with a perspective projection.
+ * Use custom cube maps.
