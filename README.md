@@ -92,3 +92,13 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Spot%20Light%20and%20Point%20Light.jpg)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/shadow%20acne.jpg)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Shadows%20-%20Perspective%20Shadows.png)
+     
+#### 11. Post Processing - Bloom
+ * Create a simple post-FX stack.
+ * Alter the rendered image.
+ * Perform post-processing when needed.
+ * Make an **artistic bloom effect**.
+
+
+
+    
