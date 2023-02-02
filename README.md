@@ -98,7 +98,10 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Alter the rendered image.
  * Perform post-processing when needed.
  * Make an **artistic bloom effect**.
-
+ 
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Gaussian%20Pyramid.gif) 
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Blend%20Result%20-%20bucibic%20filtering%20for%20upsampling.gif)
+     
 
 
     
