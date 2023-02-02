@@ -52,5 +52,6 @@ float4x4 unity_PrevObjectToWorld;
 float4x4 unity_PrevWorldToObject;
 
 float3 _WorldSpaceCameraPos;
+float4 _ProjectionParams;
 
 #endif

@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-01-30 12:20:57
- * @FilePath: \QkyosRenderPipelinec:\Users\qkyo\Unity\Project\Github\CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
+ * @LastEditTime: 2023-02-01 13:16:10
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
 
@@ -35,13 +35,16 @@ public partial class CameraRenderer
         litShaderTagId = new ShaderTagId("CustomLit");
     
     Lighting lighting = new Lighting();
+	PostFXStack postFXStack = new PostFXStack();
+    static int frameBufferId = Shader.PropertyToID("_CameraFrameBuffer");
+
 
     /// <summary>
     ///  Draw all geometry that the camera can see.
     /// </summary>
 	public void Render (ScriptableRenderContext context, Camera camera, 
                         bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
-                        ShadowSettings shadowSettings) 
+                        ShadowSettings shadowSettings, PostFXSettings postFXSettings) 
     {
 		this.context = context;
 		this.camera = camera;
@@ -57,12 +60,18 @@ public partial class CameraRenderer
 		buffer.BeginSample(SampleName);
 		ExecuteBuffer();
         lighting.Setup(context, cullingResults, shadowSettings, useLightsPerObject);
+        postFXStack.Setup(context, camera, postFXSettings);
 		buffer.EndSample(SampleName);
         Setup();
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, useLightsPerObject);
 		DrawUnsupportedShaders();       // In Unity Editor only.
-        DrawGizmos();                   // In Unity Editor only.
-		lighting.Cleanup();
+		DrawGizmosBeforeFX();                   // In Unity Editor only.
+        if (postFXStack.IsActive) 
+        {
+			postFXStack.Render(frameBufferId);
+		}
+		DrawGizmosAfterFX();
+		Cleanup();
         Submit();
 	}
 
@@ -124,7 +133,30 @@ public partial class CameraRenderer
             flags == CameraClearFlags.Color ? 
                     camera.backgroundColor.linear : Color.clear
 		);
-        // buffer.ClearRenderTarget(true, true, Color.clear);
+
+        // For FX used. We have to use a render texture as an intermediate frame buffer for the camera.
+        if (postFXStack.IsActive) {
+            // We usually draw the render texture on top of the previous frame's result.
+            // If the camera's Clear Flags is set to the sky box or a solid color, 
+            // we're guaranteed to completely cover the previous data.
+            // But for Depth and Nothing, it don't work.
+            // To prevent random results, when a stack is active always clear depth and also clear color unless a sky box is used.
+            if (flags > CameraClearFlags.Color) 
+            {
+				flags = CameraClearFlags.Color;
+			}
+
+			buffer.GetTemporaryRT(
+				frameBufferId, camera.pixelWidth, camera.pixelHeight,
+				32, FilterMode.Bilinear, RenderTextureFormat.Default
+			);
+			buffer.SetRenderTarget(
+				frameBufferId,
+				RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
+			);
+		}
+        buffer.ClearRenderTarget(true, true, Color.clear);
+
         /// Inject profiler samples (Like debugger)
 		buffer.BeginSample(SampleName);
         ExecuteBuffer();
@@ -145,7 +177,8 @@ public partial class CameraRenderer
 		buffer.Clear();
     }
 
-    bool Cull (float maxShadowDistance) {
+    bool Cull (float maxShadowDistance) 
+    {
         // Figuring out which objects can be culled. 
         // We need to culling those that fall outside of the view frustum of the camera.
 		if (camera.TryGetCullingParameters(out ScriptableCullingParameters p)) {
@@ -154,5 +187,15 @@ public partial class CameraRenderer
 			return true;
 		}
 		return false;
+	}
+
+    // Release the texture if we have an active stack.
+    void Cleanup () 
+    {
+		lighting.Cleanup();
+		if (postFXStack.IsActive) 
+        {
+			buffer.ReleaseTemporaryRT(frameBufferId);
+		}
 	}
 }

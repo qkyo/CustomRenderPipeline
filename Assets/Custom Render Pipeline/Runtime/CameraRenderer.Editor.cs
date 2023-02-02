@@ -2,8 +2,8 @@
  * @Author: Qkyo
  * @Date: 2022-12-23 13:45:20
  * @LastEditors: Qkyo
- * @LastEditTime: 2022-12-30 13:39:56
- * @FilePath: \QkyosRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.Editor.cs
+ * @LastEditTime: 2023-02-01 13:15:13
+ * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.Editor.cs
  * @Description: Render camera view, render in editor only.
  */
  
@@ -14,7 +14,8 @@ using UnityEngine.Rendering;
 
 partial class CameraRenderer
 {
-	partial void DrawGizmos ();
+	partial void DrawGizmosBeforeFX ();
+	partial void DrawGizmosAfterFX ();
     partial void DrawUnsupportedShaders ();
     partial void PrepareForSceneWindow ();
     partial void PrepareBuffer ();
@@ -36,13 +37,19 @@ partial class CameraRenderer
 
         static Material errorMaterial;
 
-        partial void DrawGizmos () 
+        partial void DrawGizmosBeforeFX () 
         {
             if (Handles.ShouldRenderGizmos()) {
                 context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
-                context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
             }
         }
+
+        partial void DrawGizmosAfterFX () 
+        {
+            if (Handles.ShouldRenderGizmos()) {
+                context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
+            }
+	    }
 
         partial void DrawUnsupportedShaders()
         {
