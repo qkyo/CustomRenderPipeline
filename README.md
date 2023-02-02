@@ -22,7 +22,6 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Configure material properties per object and draw many at random.
  * Create transparent and cutout materials.
  
- 
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Draw%20Calls%20Shaders%20and%20Batches.png)
     
 #### 3. Direct Light - Direct Illumination
@@ -32,7 +31,6 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Make lit transparent materials.
  * Create a custom shader GUI with presets.
  
- 
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Light%2C%20BRDF.png)
     
 #### 4. Directional Shadow - Cascaded Shadow Maps
@@ -41,7 +39,6 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Use cascaded shadow maps.
  * Blend, fade, and filter shadows.
 
- 
     ![image](https://github.com/qkyo/CustomRenderPipeline/blob/main/Assets/RenderResultSet/Directional%20Shadows%20-%20Cascaded%20Shadow%20Maps.png)
 
 #### 5. Baked Light - Light Maps and Probes
@@ -77,9 +74,21 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
  * Perform tangent-space normal mapping.
  
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/MODS%2C%20Detail%20and%20Normal%20Map.gif)
+
+#### 9. Point and Spot Lights - Lights with Limited Influence
+ * Support more light types than only directional.
+ * Include realtime point and spot lights.
+ * Bake lighting and shadows for point and spot lights.
+ * Limit rendering to max 8 other lights per object.
+ 
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Lights%20and%20Their%20Baked%20Shadow.jpg)
      
-#### 9. Point and Spot Shadows - Perspective Shadows
+#### 10. Point and Spot Shadows - Perspective Shadows
  * Mix baked and realtime shadows for point and spot lights.
  * Add a second shadow atlas.
  * Render and sample shadows with a perspective projection.
  * Use custom cube maps.
+
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Spot%20Light%20and%20Point%20Light.jpg)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/shadow%20acne.jpg)
+     ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Point%20and%20Spot%20Shadows%20-%20Perspective%20Shadows.png)
