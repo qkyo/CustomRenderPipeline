@@ -113,4 +113,12 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/FadeFireflies%20phenomenon.gif)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Bloom.jpg)
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Tone-Mapping.jpg)
-    
+
+     
+#### 13. Color Grading - Playing with Colors
+ * Perform color grading.
+ * Duplicate multiple URP/HDRP color grading tools.
+ * Use a color LUT.
+ 
+ ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Color%20Grading.png)
+ ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Color%20Grading%20-%20Post%20Processing%20Setting.png)
