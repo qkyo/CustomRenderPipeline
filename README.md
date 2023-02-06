@@ -102,6 +102,15 @@ https://catlikecoding.com/unity/tutorials/custom-srp/
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Gaussian%20Pyramid.gif) 
      ![image](https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Blend%20Result%20-%20bucibic%20filtering%20for%20upsampling.gif)
      
+#### 12. HDR - Scattering and Tone Mapping
+ * Render to HDR textures.
+ * Reduce bloom fireflies.
+ * Add scattering bloom.
+ * Support multiple tone mapping modes.
 
-
+  https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/HDR.jpg
+  https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Fireflies%20phenomenon.gif
+  https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/FadeFireflies%20phenomenon.gif
+  https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Bloom.jpg
+  https://github.com/qkyo/CustomScriptableRenderPipeline/blob/main/Assets/RenderResultSet/Tone-Mapping.jpg
     
