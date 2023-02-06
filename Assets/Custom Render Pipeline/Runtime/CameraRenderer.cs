@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-02-02 18:03:13
+ * @LastEditTime: 2023-02-06 17:16:08
  * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
@@ -45,7 +45,8 @@ public partial class CameraRenderer
     /// </summary>
 	public void Render (ScriptableRenderContext context, Camera camera, 
                         bool allowHDR, bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
-                        ShadowSettings shadowSettings, PostFXSettings postFXSettings) 
+                        ShadowSettings shadowSettings, PostFXSettings postFXSettings,
+		                int colorLUTResolution) 
     {
 		this.context = context;
 		this.camera = camera;
@@ -62,7 +63,7 @@ public partial class CameraRenderer
 		buffer.BeginSample(SampleName);
 		ExecuteBuffer();
         lighting.Setup(context, cullingResults, shadowSettings, useLightsPerObject);
-        postFXStack.Setup(context, camera, postFXSettings, useHDR);
+        postFXStack.Setup(context, camera, postFXSettings, useHDR, colorLUTResolution);
 		buffer.EndSample(SampleName);
         Setup();
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, useLightsPerObject);
