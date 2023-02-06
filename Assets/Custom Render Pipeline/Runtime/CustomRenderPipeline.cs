@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 15:03:01
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-02-01 12:18:22
+ * @LastEditTime: 2023-02-02 17:07:33
  * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CustomRenderPipeline.cs
  * @Description: CustomRenderPipeline
  */
@@ -14,16 +14,18 @@ public partial class CustomRenderPipeline : RenderPipeline
 {	
     CameraRenderer renderer = new CameraRenderer();
     ShadowSettings shadowSettings;
-    bool useDynamicBatching, useGPUInstancing, useLightsPerObject;
+    bool allowHDR, useDynamicBatching, useGPUInstancing, useLightsPerObject;
 	PostFXSettings postFXSettings;
 
-	public CustomRenderPipeline (bool useDynamicBatching, 
+	public CustomRenderPipeline (bool allowHDR,
+                                 bool useDynamicBatching, 
                                  bool useGPUInstancing, 
                                  bool useSRPBatcher,
                                  bool useLightsPerObject,
                                  ShadowSettings shadowSettings,
                                  PostFXSettings postFXSettings) 
     {
+        this.allowHDR = allowHDR;
 		this.useDynamicBatching = useDynamicBatching;
 		this.useGPUInstancing = useGPUInstancing;
         this.shadowSettings = shadowSettings;
@@ -43,7 +45,7 @@ public partial class CustomRenderPipeline : RenderPipeline
     protected override void Render (ScriptableRenderContext context, Camera[] cameras) 
     {
         foreach (Camera camera in cameras) {
-			renderer.Render(context, camera, useDynamicBatching, useGPUInstancing, useLightsPerObject, shadowSettings, postFXSettings);
+			renderer.Render(context, camera, allowHDR, useDynamicBatching, useGPUInstancing, useLightsPerObject, shadowSettings, postFXSettings);
 		}
     }
 

@@ -2,7 +2,7 @@
  * @Author: Qkyo
  * @Date: 2022-12-22 16:13:47
  * @LastEditors: Qkyo
- * @LastEditTime: 2023-02-01 13:16:10
+ * @LastEditTime: 2023-02-02 18:03:13
  * @FilePath: \CustomRenderPipeline\Assets\Custom Render Pipeline\Runtime\CameraRenderer.cs
  * @Description: Render camera view, for released apps.
  */
@@ -37,13 +37,14 @@ public partial class CameraRenderer
     Lighting lighting = new Lighting();
 	PostFXStack postFXStack = new PostFXStack();
     static int frameBufferId = Shader.PropertyToID("_CameraFrameBuffer");
+    bool useHDR;
 
 
     /// <summary>
     ///  Draw all geometry that the camera can see.
     /// </summary>
 	public void Render (ScriptableRenderContext context, Camera camera, 
-                        bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
+                        bool allowHDR, bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
                         ShadowSettings shadowSettings, PostFXSettings postFXSettings) 
     {
 		this.context = context;
@@ -56,11 +57,12 @@ public partial class CameraRenderer
         {
 			return;
 		}
+		useHDR = allowHDR && camera.allowHDR;
 
 		buffer.BeginSample(SampleName);
 		ExecuteBuffer();
         lighting.Setup(context, cullingResults, shadowSettings, useLightsPerObject);
-        postFXStack.Setup(context, camera, postFXSettings);
+        postFXStack.Setup(context, camera, postFXSettings, useHDR);
 		buffer.EndSample(SampleName);
         Setup();
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, useLightsPerObject);
@@ -146,9 +148,10 @@ public partial class CameraRenderer
 				flags = CameraClearFlags.Color;
 			}
 
+            // Create intermediate frame buffer
 			buffer.GetTemporaryRT(
 				frameBufferId, camera.pixelWidth, camera.pixelHeight,
-				32, FilterMode.Bilinear, RenderTextureFormat.Default
+				32, FilterMode.Bilinear, useHDR ? RenderTextureFormat.DefaultHDR :RenderTextureFormat.Default
 			);
 			buffer.SetRenderTarget(
 				frameBufferId,
