@@ -1,8 +1,5 @@
 # Custom Scriptable Render Pipeline
 
-### Reference
-https://catlikecoding.com/unity/tutorials/custom-srp/
-
 ### Unity Version
 2021.3.14f1
   
